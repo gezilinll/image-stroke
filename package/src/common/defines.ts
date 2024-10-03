@@ -3,3 +3,15 @@ export declare type ImageElement =
     | ImageBitmap
     | OffscreenCanvas
     | HTMLImageElement;
+
+export interface Rect {
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+}
+
+export interface Point {
+    x: number;
+    y: number;
+}

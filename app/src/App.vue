@@ -79,13 +79,25 @@ function onFileChange(event: any) {
                 const ctx = canvas.getContext('2d')!;
                 const imageData = ctx.createImageData(canvas.width, canvas.height);
                 for (let i = 0; i < data.length; i++) {
-                    const value = data[i] === 0 ? 0 : 255;
-                    imageData.data[4 * i + 0] = value;
-                    imageData.data[4 * i + 1] = value;
-                    imageData.data[4 * i + 2] = value;
-                    imageData.data[4 * i + 3] = 255;
+                    const value = data[i];
+                    // 将 SDF 数据映射到颜色值（例如灰度图像）
+                    const intensity = Math.min(255, Math.max(0, 128 + value * 10));
+                    imageData.data[i * 4] = intensity;
+                    imageData.data[i * 4 + 1] = intensity;
+                    imageData.data[i * 4 + 2] = intensity;
+                    imageData.data[i * 4 + 3] = 255; // 不透明
                 }
+                // for (let i = 0; i < data.length; i++) {
+                //     const value = data[i] === 50 ? 0 : 255;
+                //     imageData.data[4 * i + 0] = value;
+                //     imageData.data[4 * i + 1] = value;
+                //     imageData.data[4 * i + 2] = value;
+                //     imageData.data[4 * i + 3] = 255;
+                // }
                 ctx.putImageData(imageData, 0, 0);
+                // const solid = new Solid();
+                // const path = sdf.getStrokePath(10);
+                // solid.drawSolid(canvas, path);
             };
         };
         reader.readAsDataURL(file);

@@ -1,8 +1,9 @@
-import { ImageElement } from '../common/defines';
+import { ImageElement, Point } from '../common/defines';
 const INF = 1e20;
 
 export class SDF {
     private _imageCanvas: HTMLCanvasElement;
+    private _distance: Uint8ClampedArray | null = null;
 
     constructor(image: ImageElement) {
         this._imageCanvas = document.createElement('canvas');
@@ -53,7 +54,32 @@ export class SDF {
             data[i] = d;
         }
 
-        return data;
+        this._distance = data;
+
+        return this._distance;
+    }
+
+    getStrokePath(distance: number) {
+        const sdfData = this._distance!;
+        const width = this._imageCanvas.width;
+        const height = this._imageCanvas.height;
+        const points: Point[] = [];
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                const i = y * width + x;
+                if (sdfData[i] === distance) {
+                    points.push({ x, y });
+                }
+                // // 判断当前点是否在等值线附近
+                // if (
+                //     (sdfData[i] - distance) * (sdfData[i + 1] - distance) < 0 ||
+                //     (sdfData[i] - distance) * (sdfData[i + width] - distance) < 0
+                // ) {
+                //     points.push({ x, y });
+                // }
+            }
+        }
+        return points;
     }
 
     // 2D Euclidean squared distance transform by Felzenszwalb & Huttenlocher https://cs.brown.edu/~pff/papers/dt-final.pdf
